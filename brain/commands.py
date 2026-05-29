@@ -6,7 +6,9 @@ import time
 
 from plyer import notification
 
-# ---------------- GREETING SYSTEM ---------------- #
+# ==================================================
+# GREETING SYSTEM
+# ==================================================
 
 def greet_user(assistant_name, user_name):
 
@@ -23,42 +25,59 @@ def greet_user(assistant_name, user_name):
         f"{assistant_name}: Ready to assist."
     ]
 
-    print(random.choice(greetings))
+    send_notification(
+        assistant_name,
+        random.choice(greetings)
+    )
 
-# ---------------- TIME SYSTEM ---------------- #
+# ==================================================
+# TIME SYSTEM
+# ==================================================
 
 def tell_time(assistant_name):
 
-    current_time = datetime.datetime.now().strftime("%I:%M %p")
-
-    print(
-        f"{assistant_name}: The current time is {current_time}."
+    current_time = datetime.datetime.now().strftime(
+        "%I:%M %p"
     )
 
-# ---------------- STATUS SYSTEM ---------------- #
+    send_notification(
+        assistant_name,
+        f"The current time is {current_time}."
+    )
+
+# ==================================================
+# STATUS SYSTEM
+# ==================================================
 
 def system_status(assistant_name):
 
-    print(
-        f"{assistant_name}: Systems operating normally."
+    send_notification(
+        assistant_name,
+        "Systems operating normally."
     )
 
-# ---------------- ERROR HANDLING ---------------- #
+# ==================================================
+# ERROR HANDLING
+# ==================================================
 
 def unknown_command(assistant_name):
 
-    print(
-        f"{assistant_name}: I do not recognize that command."
+    send_notification(
+        assistant_name,
+        "I do not recognize that command."
     )
 
-# ---------------- WEB COMMANDS ---------------- #
+# ==================================================
+# WEB COMMANDS
+# ==================================================
 
 def open_youtube(assistant_name):
 
     webbrowser.open("https://youtube.com")
 
-    print(
-        f"{assistant_name}: Opening YouTube."
+    send_notification(
+        assistant_name,
+        "Opening YouTube."
     )
 
 
@@ -66,32 +85,39 @@ def open_google(assistant_name):
 
     webbrowser.open("https://google.com")
 
-    print(
-        f"{assistant_name}: Opening Google."
+    send_notification(
+        assistant_name,
+        "Opening Google."
     )
 
-# ---------------- APPLICATION COMMANDS ---------------- #
+# ==================================================
+# APPLICATION COMMANDS
+# ==================================================
 
 def open_notepad(assistant_name):
 
     os.system("notepad")
 
-    print(
-        f"{assistant_name}: Opening Notepad."
+    send_notification(
+        assistant_name,
+        "Opening Notepad."
     )
 
-# ---------------- NOTE SYSTEM ---------------- #
+# ==================================================
+# NOTE SYSTEM
+# ==================================================
 
 def save_note(assistant_name):
 
-    note = input("Enter note: ")
+    note_window_text = input("Enter note: ")
 
     with open("notes/notes.txt", "a") as file:
 
-        file.write(note + "\n")
+        file.write(note_window_text + "\n")
 
-    print(
-        f"{assistant_name}: Note saved."
+    send_notification(
+        assistant_name,
+        "Note saved."
     )
 
 
@@ -103,18 +129,20 @@ def show_notes(assistant_name):
 
             notes = file.readlines()
 
-        print("\n--- NOTES ---")
+        all_notes = "\n".join(
+            note.strip() for note in notes
+        )
 
-        for note in notes:
-
-            print(note.strip())
-
-        print("-------------\n")
+        send_notification(
+            assistant_name,
+            all_notes if all_notes else "No notes found."
+        )
 
     except FileNotFoundError:
 
-        print(
-            f"{assistant_name}: No notes found."
+        send_notification(
+            assistant_name,
+            "No notes found."
         )
 
 
@@ -124,11 +152,14 @@ def clear_notes(assistant_name):
 
         file.write("")
 
-    print(
-        f"{assistant_name}: All notes cleared."
+    send_notification(
+        assistant_name,
+        "All notes cleared."
     )
 
-# ---------------- NOTIFICATION SYSTEM ---------------- #
+# ==================================================
+# NOTIFICATION SYSTEM
+# ==================================================
 
 def send_notification(title, message):
 
@@ -138,7 +169,9 @@ def send_notification(title, message):
         timeout=10
     )
 
-# ---------------- BACKGROUND REMINDER SYSTEM ---------------- #
+# ==================================================
+# BACKGROUND REMINDER SYSTEM
+# ==================================================
 
 def hourly_reminder_loop(assistant_name):
 
@@ -147,6 +180,6 @@ def hourly_reminder_loop(assistant_name):
         time.sleep(3600)
 
         send_notification(
-            "JARVIS",
+            assistant_name,
             "Hourly reminder."
         )

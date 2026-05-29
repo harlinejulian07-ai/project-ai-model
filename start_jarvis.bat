@@ -1,4 +1,6 @@
 @echo off
 cd /d "D:\PROJECT JARVIS"
-py brain/main.py
-pause
+
+start "" "brain\main.pyw"
+
+exit
