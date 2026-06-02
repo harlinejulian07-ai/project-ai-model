@@ -6,6 +6,61 @@ import time
 
 from plyer import notification
 
+import speech_recognition as sr
+import pyttsx3
+
+# ==================================================
+# VOICE SYSTEM
+# ==================================================
+
+def initialize_listener():
+
+    return sr.Recognizer()
+
+
+def initialize_voice_engine():
+
+    return pyttsx3.init()
+
+
+def speak(engine, text):
+
+    engine.say(text)
+
+    engine.runAndWait()
+
+
+def listen_for_command(listener):
+
+    try:
+
+        with sr.Microphone() as source:
+
+            print("Listening...")
+
+            listener.adjust_for_ambient_noise(
+                source,
+                duration=1
+            )
+
+            audio = listener.listen(source)
+
+        print("Processing speech...")
+
+        command = listener.recognize_google(audio)
+
+        command = command.lower()
+
+        print(f"You said: {command}")
+
+        return command
+
+    except Exception as e:
+
+        print(f"VOICE ERROR: {e}")
+
+        return None
+
 # ==================================================
 # GREETING SYSTEM
 # ==================================================
@@ -14,20 +69,22 @@ def greet_user(assistant_name, user_name):
 
     greetings = [
 
-        f"{assistant_name}: Hello, {user_name}.",
+        f"Hello, {user_name}.",
 
-        f"{assistant_name}: Welcome back, {user_name}.",
+        f"Welcome back, {user_name}.",
 
-        f"{assistant_name}: Systems online.",
+        "Systems online.",
 
-        f"{assistant_name}: Good to see you again.",
+        "Good to see you again.",
 
-        f"{assistant_name}: Ready to assist."
+        "Ready to assist."
     ]
+
+    message = random.choice(greetings)
 
     send_notification(
         assistant_name,
-        random.choice(greetings)
+        message
     )
 
 # ==================================================
@@ -109,11 +166,11 @@ def open_notepad(assistant_name):
 
 def save_note(assistant_name):
 
-    note_window_text = input("Enter note: ")
+    note = input("Enter note: ")
 
     with open("notes/notes.txt", "a") as file:
 
-        file.write(note_window_text + "\n")
+        file.write(note + "\n")
 
     send_notification(
         assistant_name,
@@ -133,9 +190,13 @@ def show_notes(assistant_name):
             note.strip() for note in notes
         )
 
+        if all_notes == "":
+
+            all_notes = "No notes found."
+
         send_notification(
             assistant_name,
-            all_notes if all_notes else "No notes found."
+            all_notes
         )
 
     except FileNotFoundError:
