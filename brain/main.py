@@ -331,7 +331,7 @@ def voice_command():
 
     else:
 
-        print("No command detected.")
+        print("No command detected.") 
 # ==================================================
 # SYSTEM TRAY
 # ==================================================
