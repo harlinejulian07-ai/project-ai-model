@@ -14,15 +14,7 @@ import os
 # CONFIG
 # ==================================================
 
-assistant_name = "JARVIS"
-
-# ==================================================
-# VOICE SYSTEM
-# ==================================================
-
-listener = initialize_listener()
-
-voice_engine = initialize_voice_engine()
+ASSISTANT_NAME = "JARVIS"
 
 # ==================================================
 # WINDOW STATE
@@ -130,14 +122,11 @@ for message in startup_messages:
     time.sleep(1)
 
 send_notification(
-    assistant_name,
+    ASSISTANT_NAME,
     f"Welcome back, {user_name}."
 )
 
-speak(
-    voice_engine,
-    "Systems online."
-)
+speak("Systems online.")
 
 # ==================================================
 # COMMAND ROUTER
@@ -183,28 +172,15 @@ def process_command(command):
 
     command = command.lower().strip()
 
+    print(f"COMMAND RECEIVED: {command}")
+
     if command == "exit":
 
         os._exit(0)
 
     elif command in commands:
 
-        if commands[command] == greet_user:
-
-            greet_user(
-                assistant_name,
-                user_name
-            )
-
-        elif commands[command] == save_note:
-
-            save_note(
-                assistant_name
-            )
-
-        else:
-
-            commands[command](assistant_name)
+        execute_command(command)
 
     else:
 
@@ -220,30 +196,31 @@ def process_command(command):
             matched_command = possible_matches[0]
 
             send_notification(
-                assistant_name,
+                ASSISTANT_NAME,
                 f"Did you mean '{matched_command}'?"
             )
 
-            if commands[matched_command] == greet_user:
-
-                greet_user(
-                    assistant_name,
-                    user_name
-                )
-
-            elif commands[matched_command] == save_note:
-
-                save_note(
-                    assistant_name
-                )
-
-            else:
-
-                commands[matched_command](assistant_name)
+            execute_command(matched_command)
 
         else:
 
-            unknown_command(assistant_name)
+            unknown_command(ASSISTANT_NAME)
+
+
+def execute_command(command):
+
+    command_function = commands[command]
+
+    if command_function == greet_user:
+
+        greet_user(
+            ASSISTANT_NAME,
+            user_name
+        )
+
+    else:
+
+        command_function(ASSISTANT_NAME)
 
 # ==================================================
 # COMMAND WINDOW
@@ -258,7 +235,7 @@ def open_command_window():
 
     command_window_open = True
 
-    window = tk.Tk()
+    window = tk.Toplevel(root)
 
     window.title("JARVIS")
 
@@ -313,25 +290,26 @@ def open_command_window():
 
     submit_button.pack(pady=10)
 
-    window.mainloop()
-
 # ==================================================
 # VOICE COMMANDS
 # ==================================================
 
 def voice_command():
 
-    command = listen_for_command(listener)
+    print("VOICE SYSTEM ACTIVATED")
+
+    command = listen_for_command()
 
     if command:
 
-        print(f"Executing: {command}")
+        print(f"EXECUTING: {command}")
 
         process_command(command)
 
     else:
 
-        print("No command detected.") 
+        print("NO COMMAND DETECTED")
+
 # ==================================================
 # SYSTEM TRAY
 # ==================================================
@@ -363,10 +341,10 @@ def quit_jarvis(icon, item):
 
 def open_command_from_tray(icon, item):
 
-    threading.Thread(
-        target=open_command_window,
-        daemon=True
-    ).start()
+    root.after(
+        0,
+        open_command_window
+    )
 
 
 def setup_tray():
@@ -397,7 +375,7 @@ def setup_tray():
 
 reminder_thread = threading.Thread(
     target=hourly_reminder_loop,
-    args=(assistant_name,),
+    args=(ASSISTANT_NAME,),
     daemon=True
 )
 
@@ -411,21 +389,32 @@ tray_thread = threading.Thread(
 tray_thread.start()
 
 # ==================================================
+# TKINTER ROOT
+# ==================================================
+
+root = tk.Tk()
+
+root.withdraw()
+
+# ==================================================
 # HOTKEYS
 # ==================================================
 
 keyboard.add_hotkey(
     "ctrl+alt+j",
-    open_command_window
+    lambda: root.after(0, open_command_window)
 )
 
 keyboard.add_hotkey(
     "ctrl+alt+v",
-    voice_command
+    lambda: threading.Thread(
+        target=voice_command,
+        daemon=True
+    ).start()
 )
 
 # ==================================================
-# KEEP APP RUNNING
+# MAIN LOOP
 # ==================================================
 
-keyboard.wait()
+root.mainloop()

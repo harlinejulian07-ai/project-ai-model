@@ -7,30 +7,28 @@ import time
 from plyer import notification
 
 import speech_recognition as sr
-import pyttsx3
 
 # ==================================================
 # VOICE SYSTEM
 # ==================================================
 
-def initialize_listener():
-
-    return sr.Recognizer()
+listener = sr.Recognizer()
 
 
-def initialize_voice_engine():
+def speak(text):
 
-    return pyttsx3.init()
+    safe_text = text.replace("'", "")
+
+    command = f'''
+    PowerShell -Command "Add-Type -AssemblyName System.Speech;
+    $voice = New-Object System.Speech.Synthesis.SpeechSynthesizer;
+    $voice.Speak('{safe_text}')"
+    '''
+
+    os.system(command)
 
 
-def speak(engine, text):
-
-    engine.say(text)
-
-    engine.runAndWait()
-
-
-def listen_for_command(listener):
+def listen_for_command():
 
     try:
 
@@ -87,6 +85,8 @@ def greet_user(assistant_name, user_name):
         message
     )
 
+    speak(message)
+
 # ==================================================
 # TIME SYSTEM
 # ==================================================
@@ -97,10 +97,14 @@ def tell_time(assistant_name):
         "%I:%M %p"
     )
 
+    message = f"The current time is {current_time}."
+
     send_notification(
         assistant_name,
-        f"The current time is {current_time}."
+        message
     )
+
+    speak(message)
 
 # ==================================================
 # STATUS SYSTEM
@@ -108,10 +112,14 @@ def tell_time(assistant_name):
 
 def system_status(assistant_name):
 
+    message = "Systems operating normally."
+
     send_notification(
         assistant_name,
-        "Systems operating normally."
+        message
     )
+
+    speak(message)
 
 # ==================================================
 # ERROR HANDLING
@@ -119,10 +127,14 @@ def system_status(assistant_name):
 
 def unknown_command(assistant_name):
 
+    message = "I do not recognize that command."
+
     send_notification(
         assistant_name,
-        "I do not recognize that command."
+        message
     )
+
+    speak(message)
 
 # ==================================================
 # WEB COMMANDS
@@ -132,20 +144,28 @@ def open_youtube(assistant_name):
 
     webbrowser.open("https://youtube.com")
 
+    message = "Opening YouTube."
+
     send_notification(
         assistant_name,
-        "Opening YouTube."
+        message
     )
+
+    speak(message)
 
 
 def open_google(assistant_name):
 
     webbrowser.open("https://google.com")
 
+    message = "Opening Google."
+
     send_notification(
         assistant_name,
-        "Opening Google."
+        message
     )
+
+    speak(message)
 
 # ==================================================
 # APPLICATION COMMANDS
@@ -155,10 +175,14 @@ def open_notepad(assistant_name):
 
     os.system("notepad")
 
+    message = "Opening Notepad."
+
     send_notification(
         assistant_name,
-        "Opening Notepad."
+        message
     )
+
+    speak(message)
 
 # ==================================================
 # NOTE SYSTEM
@@ -166,16 +190,20 @@ def open_notepad(assistant_name):
 
 def save_note(assistant_name):
 
-    note = input("Enter note: ")
+    note_window = input("Enter note: ")
 
     with open("notes/notes.txt", "a") as file:
 
-        file.write(note + "\n")
+        file.write(note_window + "\n")
+
+    message = "Note saved."
 
     send_notification(
         assistant_name,
-        "Note saved."
+        message
     )
+
+    speak(message)
 
 
 def show_notes(assistant_name):
@@ -199,12 +227,16 @@ def show_notes(assistant_name):
             all_notes
         )
 
+        speak("Displaying notes.")
+
     except FileNotFoundError:
 
         send_notification(
             assistant_name,
             "No notes found."
         )
+
+        speak("No notes found.")
 
 
 def clear_notes(assistant_name):
@@ -213,10 +245,14 @@ def clear_notes(assistant_name):
 
         file.write("")
 
+    message = "All notes cleared."
+
     send_notification(
         assistant_name,
-        "All notes cleared."
+        message
     )
+
+    speak(message)
 
 # ==================================================
 # NOTIFICATION SYSTEM
@@ -244,3 +280,5 @@ def hourly_reminder_loop(assistant_name):
             assistant_name,
             "Hourly reminder."
         )
+
+        speak("Hourly reminder.")
