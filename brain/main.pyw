@@ -9,12 +9,42 @@ import keyboard
 import difflib
 import time
 import os
+import logging
+
+# ==================================================
+# FORCE WORKING DIRECTORY
+# ==================================================
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+os.chdir(BASE_DIR)
 
 # ==================================================
 # CONFIG
 # ==================================================
 
 ASSISTANT_NAME = "JARVIS"
+
+# ==================================================
+# LOGGING
+# ==================================================
+
+LOG_FILE = os.path.join(BASE_DIR, "jarvis.log")
+
+logging.basicConfig(
+    filename=LOG_FILE,
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+
+# ==================================================
+# FILE PATHS
+# ==================================================
+
+USER_NAME_FILE = os.path.join(
+    BASE_DIR,
+    "user_name.txt"
+)
 
 # ==================================================
 # WINDOW STATE
@@ -30,7 +60,7 @@ def load_user_name():
 
     try:
 
-        with open("brain/user_name.txt", "r") as file:
+        with open(USER_NAME_FILE, "r") as file:
 
             return file.read().strip()
 
@@ -41,12 +71,23 @@ def load_user_name():
 
 def save_user_name(name):
 
-    with open("brain/user_name.txt", "w") as file:
+    with open(USER_NAME_FILE, "w") as file:
 
         file.write(name)
 
+# ==================================================
+# LOAD USER
+# ==================================================
 
 user_name = load_user_name()
+
+# ==================================================
+# TKINTER ROOT
+# ==================================================
+
+root = tk.Tk()
+
+root.withdraw()
 
 # ==================================================
 # FIRST TIME SETUP
@@ -54,7 +95,7 @@ user_name = load_user_name()
 
 if not user_name:
 
-    setup_window = tk.Tk()
+    setup_window = tk.Toplevel(root)
 
     setup_window.title("JARVIS Setup")
 
@@ -84,9 +125,11 @@ if not user_name:
 
         user_name = name_entry.get().strip()
 
-        save_user_name(user_name)
+        if user_name:
 
-        setup_window.destroy()
+            save_user_name(user_name)
+
+            setup_window.destroy()
 
     submit_button = tk.Button(
         setup_window,
@@ -143,11 +186,14 @@ commands = {
     "time": tell_time,
     "clock": tell_time,
 
+    # Status
+    "status": system_status,
+    "how are you": system_status,
+
     # YouTube
     "youtube": open_youtube,
     "yt": open_youtube,
     "open youtube": open_youtube,
-    "launch youtube": open_youtube,
 
     # Google
     "google": open_google,
@@ -165,47 +211,8 @@ commands = {
 }
 
 # ==================================================
-# COMMAND PROCESSOR
+# COMMAND EXECUTION
 # ==================================================
-
-def process_command(command):
-
-    command = command.lower().strip()
-
-    print(f"COMMAND RECEIVED: {command}")
-
-    if command == "exit":
-
-        os._exit(0)
-
-    elif command in commands:
-
-        execute_command(command)
-
-    else:
-
-        possible_matches = difflib.get_close_matches(
-            command,
-            commands.keys(),
-            n=1,
-            cutoff=0.6
-        )
-
-        if possible_matches:
-
-            matched_command = possible_matches[0]
-
-            send_notification(
-                ASSISTANT_NAME,
-                f"Did you mean '{matched_command}'?"
-            )
-
-            execute_command(matched_command)
-
-        else:
-
-            unknown_command(ASSISTANT_NAME)
-
 
 def execute_command(command):
 
@@ -223,6 +230,48 @@ def execute_command(command):
         command_function(ASSISTANT_NAME)
 
 # ==================================================
+# COMMAND PROCESSOR
+# ==================================================
+
+def process_command(command):
+
+    command = command.lower().strip()
+
+    print(f"COMMAND RECEIVED: {command}")
+
+    if command == "exit":
+
+        os._exit(0)
+
+    if command in commands:
+
+        execute_command(command)
+
+        return
+
+    possible_matches = difflib.get_close_matches(
+        command,
+        commands.keys(),
+        n=1,
+        cutoff=0.6
+    )
+
+    if possible_matches:
+
+        matched_command = possible_matches[0]
+
+        send_notification(
+            ASSISTANT_NAME,
+            f"Did you mean '{matched_command}'?"
+        )
+
+        execute_command(matched_command)
+
+    else:
+
+        unknown_command(ASSISTANT_NAME)
+
+# ==================================================
 # COMMAND WINDOW
 # ==================================================
 
@@ -231,6 +280,7 @@ def open_command_window():
     global command_window_open
 
     if command_window_open:
+
         return
 
     command_window_open = True
@@ -275,11 +325,6 @@ def open_command_window():
 
         close_window()
 
-    window.protocol(
-        "WM_DELETE_WINDOW",
-        close_window
-    )
-
     entry.bind("<Return>", submit_command)
 
     submit_button = tk.Button(
@@ -290,25 +335,30 @@ def open_command_window():
 
     submit_button.pack(pady=10)
 
+    window.protocol(
+        "WM_DELETE_WINDOW",
+        close_window
+    )
+
 # ==================================================
 # VOICE COMMANDS
 # ==================================================
 
 def voice_command():
 
-    print("VOICE SYSTEM ACTIVATED")
+    logging.info("VOICE SYSTEM ACTIVATED")
 
     command = listen_for_command()
 
     if command:
 
-        print(f"EXECUTING: {command}")
+        logging.info(f"EXECUTING: {command}")
 
         process_command(command)
 
     else:
 
-        print("NO COMMAND DETECTED")
+        logging.info("VOICE COMMAND NOT RECOGNIZED")
 
 # ==================================================
 # SYSTEM TRAY
@@ -389,30 +439,18 @@ tray_thread = threading.Thread(
 tray_thread.start()
 
 # ==================================================
-# TKINTER ROOT
-# ==================================================
-
-root = tk.Tk()
-
-root.withdraw()
-
-# ==================================================
 # HOTKEYS
 # ==================================================
 
 keyboard.add_hotkey(
     "ctrl+alt+j",
-    lambda: root.after(0, open_command_window)
+    open_command_window
 )
 
 keyboard.add_hotkey(
     "ctrl+alt+v",
-    lambda: threading.Thread(
-        target=voice_command,
-        daemon=True
-    ).start()
+    voice_command
 )
-
 # ==================================================
 # MAIN LOOP
 # ==================================================

@@ -3,17 +3,36 @@ import random
 import os
 import webbrowser
 import time
+import logging
 
 from plyer import notification
 
 import speech_recognition as sr
 
 # ==================================================
+# FORCE WORKING DIRECTORY
+# ==================================================
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+os.chdir(BASE_DIR)
+
+# ==================================================
+# FILE PATHS
+# ==================================================
+
+NOTES_FILE = os.path.join(
+    BASE_DIR,
+    "..",
+    "notes",
+    "notes.txt"
+)
+
+# ==================================================
 # VOICE SYSTEM
 # ==================================================
 
 listener = sr.Recognizer()
-
 
 def speak(text):
 
@@ -34,7 +53,7 @@ def listen_for_command():
 
         with sr.Microphone() as source:
 
-            print("Listening...")
+            logging.info("Listening...")
 
             listener.adjust_for_ambient_noise(
                 source,
@@ -43,21 +62,33 @@ def listen_for_command():
 
             audio = listener.listen(source)
 
-        print("Processing speech...")
+        logging.info("Processing speech...")
 
         command = listener.recognize_google(audio)
 
         command = command.lower()
 
-        print(f"You said: {command}")
+        logging.info(f"You said: {command}")
 
         return command
 
-    except Exception as e:
+    except Exception as error:
 
-        print(f"VOICE ERROR: {e}")
+        logging.error(f"VOICE ERROR: {error}")
 
         return None
+
+# ==================================================
+# NOTIFICATIONS
+# ==================================================
+
+def send_notification(title, message):
+
+    notification.notify(
+        title=title,
+        message=message,
+        timeout=10
+    )
 
 # ==================================================
 # GREETING SYSTEM
@@ -122,7 +153,7 @@ def system_status(assistant_name):
     speak(message)
 
 # ==================================================
-# ERROR HANDLING
+# UNKNOWN COMMAND
 # ==================================================
 
 def unknown_command(assistant_name):
@@ -190,11 +221,16 @@ def open_notepad(assistant_name):
 
 def save_note(assistant_name):
 
-    note_window = input("Enter note: ")
+    note = input("Enter note: ")
 
-    with open("notes/notes.txt", "a") as file:
+    os.makedirs(
+        os.path.dirname(NOTES_FILE),
+        exist_ok=True
+    )
 
-        file.write(note_window + "\n")
+    with open(NOTES_FILE, "a") as file:
+
+        file.write(note + "\n")
 
     message = "Note saved."
 
@@ -210,7 +246,7 @@ def show_notes(assistant_name):
 
     try:
 
-        with open("notes/notes.txt", "r") as file:
+        with open(NOTES_FILE, "r") as file:
 
             notes = file.readlines()
 
@@ -218,7 +254,7 @@ def show_notes(assistant_name):
             note.strip() for note in notes
         )
 
-        if all_notes == "":
+        if not all_notes:
 
             all_notes = "No notes found."
 
@@ -241,7 +277,7 @@ def show_notes(assistant_name):
 
 def clear_notes(assistant_name):
 
-    with open("notes/notes.txt", "w") as file:
+    with open(NOTES_FILE, "w") as file:
 
         file.write("")
 
@@ -255,19 +291,7 @@ def clear_notes(assistant_name):
     speak(message)
 
 # ==================================================
-# NOTIFICATION SYSTEM
-# ==================================================
-
-def send_notification(title, message):
-
-    notification.notify(
-        title=title,
-        message=message,
-        timeout=10
-    )
-
-# ==================================================
-# BACKGROUND REMINDER SYSTEM
+# REMINDER SYSTEM
 # ==================================================
 
 def hourly_reminder_loop(assistant_name):

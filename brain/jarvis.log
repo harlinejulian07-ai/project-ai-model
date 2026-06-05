@@ -1,0 +1,110 @@
+2026-06-05 08:51:14,608 [DEBUG] Importing AvifImagePlugin
+2026-06-05 08:51:14,611 [DEBUG] Importing BlpImagePlugin
+2026-06-05 08:51:14,612 [DEBUG] Importing BmpImagePlugin
+2026-06-05 08:51:14,613 [DEBUG] Importing BufrStubImagePlugin
+2026-06-05 08:51:14,613 [DEBUG] Importing CurImagePlugin
+2026-06-05 08:51:14,614 [DEBUG] Importing DcxImagePlugin
+2026-06-05 08:51:14,615 [DEBUG] Importing DdsImagePlugin
+2026-06-05 08:51:14,619 [DEBUG] Importing EpsImagePlugin
+2026-06-05 08:51:14,621 [DEBUG] Importing FitsImagePlugin
+2026-06-05 08:51:14,623 [DEBUG] Importing FliImagePlugin
+2026-06-05 08:51:14,624 [DEBUG] Importing FpxImagePlugin
+2026-06-05 08:51:14,625 [DEBUG] Image: failed to import FpxImagePlugin: No module named 'olefile'
+2026-06-05 08:51:14,626 [DEBUG] Importing FtexImagePlugin
+2026-06-05 08:51:14,628 [DEBUG] Importing GbrImagePlugin
+2026-06-05 08:51:14,629 [DEBUG] Importing GifImagePlugin
+2026-06-05 08:51:14,629 [DEBUG] Importing GribStubImagePlugin
+2026-06-05 08:51:14,630 [DEBUG] Importing Hdf5StubImagePlugin
+2026-06-05 08:51:14,631 [DEBUG] Importing IcnsImagePlugin
+2026-06-05 08:51:14,643 [DEBUG] Importing IcoImagePlugin
+2026-06-05 08:51:14,645 [DEBUG] Importing ImImagePlugin
+2026-06-05 08:51:14,646 [DEBUG] Importing ImtImagePlugin
+2026-06-05 08:51:14,646 [DEBUG] Importing IptcImagePlugin
+2026-06-05 08:51:14,647 [DEBUG] Importing JpegImagePlugin
+2026-06-05 08:51:14,647 [DEBUG] Importing Jpeg2KImagePlugin
+2026-06-05 08:51:14,647 [DEBUG] Importing McIdasImagePlugin
+2026-06-05 08:51:14,648 [DEBUG] Importing MicImagePlugin
+2026-06-05 08:51:14,649 [DEBUG] Image: failed to import MicImagePlugin: No module named 'olefile'
+2026-06-05 08:51:14,649 [DEBUG] Importing MpegImagePlugin
+2026-06-05 08:51:14,650 [DEBUG] Importing MpoImagePlugin
+2026-06-05 08:51:14,654 [DEBUG] Importing MspImagePlugin
+2026-06-05 08:51:14,655 [DEBUG] Importing PalmImagePlugin
+2026-06-05 08:51:14,656 [DEBUG] Importing PcdImagePlugin
+2026-06-05 08:51:14,663 [DEBUG] Importing PcxImagePlugin
+2026-06-05 08:51:14,663 [DEBUG] Importing PdfImagePlugin
+2026-06-05 08:51:14,670 [DEBUG] Importing PixarImagePlugin
+2026-06-05 08:51:14,674 [DEBUG] Importing PngImagePlugin
+2026-06-05 08:51:14,674 [DEBUG] Importing PpmImagePlugin
+2026-06-05 08:51:14,674 [DEBUG] Importing PsdImagePlugin
+2026-06-05 08:51:14,675 [DEBUG] Importing QoiImagePlugin
+2026-06-05 08:51:14,675 [DEBUG] Importing SgiImagePlugin
+2026-06-05 08:51:14,677 [DEBUG] Importing SpiderImagePlugin
+2026-06-05 08:51:14,677 [DEBUG] Importing SunImagePlugin
+2026-06-05 08:51:14,678 [DEBUG] Importing TgaImagePlugin
+2026-06-05 08:51:14,679 [DEBUG] Importing TiffImagePlugin
+2026-06-05 08:51:14,679 [DEBUG] Importing WebPImagePlugin
+2026-06-05 08:51:14,681 [DEBUG] Importing WmfImagePlugin
+2026-06-05 08:51:14,682 [DEBUG] Importing XbmImagePlugin
+2026-06-05 08:51:14,684 [DEBUG] Importing XpmImagePlugin
+2026-06-05 08:51:14,685 [DEBUG] Importing XVThumbImagePlugin
+2026-06-05 08:51:25,982 [INFO] VOICE SYSTEM ACTIVATED
+2026-06-05 08:51:25,982 [ERROR] VOICE ERROR: Could not find PyAudio; check installation
+2026-06-05 08:51:25,983 [INFO] VOICE COMMAND NOT RECOGNIZED
+2026-06-05 08:51:32,497 [INFO] VOICE SYSTEM ACTIVATED
+2026-06-05 08:51:32,498 [ERROR] VOICE ERROR: Could not find PyAudio; check installation
+2026-06-05 08:51:32,498 [INFO] VOICE COMMAND NOT RECOGNIZED
+2026-06-05 08:54:07,280 [DEBUG] Importing AvifImagePlugin
+2026-06-05 08:54:07,284 [DEBUG] Importing BlpImagePlugin
+2026-06-05 08:54:07,286 [DEBUG] Importing BmpImagePlugin
+2026-06-05 08:54:07,286 [DEBUG] Importing BufrStubImagePlugin
+2026-06-05 08:54:07,287 [DEBUG] Importing CurImagePlugin
+2026-06-05 08:54:07,287 [DEBUG] Importing DcxImagePlugin
+2026-06-05 08:54:07,289 [DEBUG] Importing DdsImagePlugin
+2026-06-05 08:54:07,293 [DEBUG] Importing EpsImagePlugin
+2026-06-05 08:54:07,299 [DEBUG] Importing FitsImagePlugin
+2026-06-05 08:54:07,309 [DEBUG] Importing FliImagePlugin
+2026-06-05 08:54:07,309 [DEBUG] Importing FpxImagePlugin
+2026-06-05 08:54:07,312 [DEBUG] Image: failed to import FpxImagePlugin: No module named 'olefile'
+2026-06-05 08:54:07,312 [DEBUG] Importing FtexImagePlugin
+2026-06-05 08:54:07,312 [DEBUG] Importing GbrImagePlugin
+2026-06-05 08:54:07,313 [DEBUG] Importing GifImagePlugin
+2026-06-05 08:54:07,313 [DEBUG] Importing GribStubImagePlugin
+2026-06-05 08:54:07,313 [DEBUG] Importing Hdf5StubImagePlugin
+2026-06-05 08:54:07,314 [DEBUG] Importing IcnsImagePlugin
+2026-06-05 08:54:07,315 [DEBUG] Importing IcoImagePlugin
+2026-06-05 08:54:07,318 [DEBUG] Importing ImImagePlugin
+2026-06-05 08:54:07,319 [DEBUG] Importing ImtImagePlugin
+2026-06-05 08:54:07,319 [DEBUG] Importing IptcImagePlugin
+2026-06-05 08:54:07,320 [DEBUG] Importing JpegImagePlugin
+2026-06-05 08:54:07,320 [DEBUG] Importing Jpeg2KImagePlugin
+2026-06-05 08:54:07,320 [DEBUG] Importing McIdasImagePlugin
+2026-06-05 08:54:07,320 [DEBUG] Importing MicImagePlugin
+2026-06-05 08:54:07,321 [DEBUG] Image: failed to import MicImagePlugin: No module named 'olefile'
+2026-06-05 08:54:07,321 [DEBUG] Importing MpegImagePlugin
+2026-06-05 08:54:07,321 [DEBUG] Importing MpoImagePlugin
+2026-06-05 08:54:07,323 [DEBUG] Importing MspImagePlugin
+2026-06-05 08:54:07,323 [DEBUG] Importing PalmImagePlugin
+2026-06-05 08:54:07,324 [DEBUG] Importing PcdImagePlugin
+2026-06-05 08:54:07,324 [DEBUG] Importing PcxImagePlugin
+2026-06-05 08:54:07,324 [DEBUG] Importing PdfImagePlugin
+2026-06-05 08:54:07,330 [DEBUG] Importing PixarImagePlugin
+2026-06-05 08:54:07,332 [DEBUG] Importing PngImagePlugin
+2026-06-05 08:54:07,332 [DEBUG] Importing PpmImagePlugin
+2026-06-05 08:54:07,332 [DEBUG] Importing PsdImagePlugin
+2026-06-05 08:54:07,333 [DEBUG] Importing QoiImagePlugin
+2026-06-05 08:54:07,334 [DEBUG] Importing SgiImagePlugin
+2026-06-05 08:54:07,338 [DEBUG] Importing SpiderImagePlugin
+2026-06-05 08:54:07,342 [DEBUG] Importing SunImagePlugin
+2026-06-05 08:54:07,343 [DEBUG] Importing TgaImagePlugin
+2026-06-05 08:54:07,344 [DEBUG] Importing TiffImagePlugin
+2026-06-05 08:54:07,346 [DEBUG] Importing WebPImagePlugin
+2026-06-05 08:54:07,349 [DEBUG] Importing WmfImagePlugin
+2026-06-05 08:54:07,350 [DEBUG] Importing XbmImagePlugin
+2026-06-05 08:54:07,351 [DEBUG] Importing XpmImagePlugin
+2026-06-05 08:54:07,352 [DEBUG] Importing XVThumbImagePlugin
+2026-06-05 08:54:10,876 [INFO] VOICE SYSTEM ACTIVATED
+2026-06-05 08:54:10,877 [ERROR] VOICE ERROR: Could not find PyAudio; check installation
+2026-06-05 08:54:10,877 [INFO] VOICE COMMAND NOT RECOGNIZED
+2026-06-05 08:54:15,340 [INFO] VOICE SYSTEM ACTIVATED
+2026-06-05 08:54:15,341 [ERROR] VOICE ERROR: Could not find PyAudio; check installation
+2026-06-05 08:54:15,341 [INFO] VOICE COMMAND NOT RECOGNIZED
