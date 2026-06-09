@@ -1,32 +1,46 @@
+# ==================================================
+# JARVIS COMMAND MANAGER
+# ==================================================
+
+# ==================================================
+# IMPORTS
+# ==================================================
+
 import datetime
-import random
-import os
-import webbrowser
-import time
 import logging
+import subprocess
+import time
 
 from plyer import notification
-
 import speech_recognition as sr
 
-# ==================================================
-# FORCE WORKING DIRECTORY
-# ==================================================
+from modules.youtube import run as youtube
+from modules.google import run as google
+from modules.system import get_time
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-os.chdir(BASE_DIR)
-
-# ==================================================
-# FILE PATHS
-# ==================================================
-
-NOTES_FILE = os.path.join(
-    BASE_DIR,
-    "..",
-    "notes",
-    "notes.txt"
+from modules.notes import (
+    open_notes,
+    save_note as note_save,
+    get_notes,
+    clear_notes as note_clear
 )
+
+# ==================================================
+# REMINDER SYSTEM
+# ==================================================
+
+def hourly_reminder_loop(assistant_name):
+
+    while True:
+
+        time.sleep(3600)
+
+        send_notification(
+            assistant_name,
+            "Hourly reminder."
+        )
+
+        speak("Hourly reminder.")
 
 # ==================================================
 # VOICE SYSTEM
@@ -34,18 +48,48 @@ NOTES_FILE = os.path.join(
 
 listener = sr.Recognizer()
 
+# ==================================================
+# SPEECH SYSTEM
+# ==================================================
+
 def speak(text):
 
-    safe_text = text.replace("'", "")
+    try:
 
-    command = f'''
-    PowerShell -Command "Add-Type -AssemblyName System.Speech;
-    $voice = New-Object System.Speech.Synthesis.SpeechSynthesizer;
-    $voice.Speak('{safe_text}')"
-    '''
+        safe_text = text.replace("'", "")
 
-    os.system(command)
+        subprocess.Popen(
+            [
+                "powershell",
+                "-Command",
+                f"""
+                Add-Type -AssemblyName System.Speech;
+                $voice = New-Object System.Speech.Synthesis.SpeechSynthesizer;
+                $voice.Speak('{safe_text}')
+                """
+            ],
+            creationflags=subprocess.CREATE_NO_WINDOW
+        )
 
+    except Exception as error:
+
+        logging.error(f"TTS ERROR: {error}")
+
+# ==================================================
+# NOTIFICATION SYSTEM
+# ==================================================
+
+def send_notification(title, message):
+
+    notification.notify(
+        title=title,
+        message=message,
+        timeout=10
+    )
+
+# ==================================================
+# VOICE RECOGNITION
+# ==================================================
 
 def listen_for_command():
 
@@ -68,67 +112,29 @@ def listen_for_command():
 
         command = command.lower()
 
-        logging.info(f"You said: {command}")
+        logging.info(f"VOICE COMMAND: {command}")
 
         return command
 
     except Exception as error:
 
-        logging.error(f"VOICE ERROR: {error}")
+        logging.error(
+            f"VOICE ERROR: {error}"
+        )
 
         return None
 
 # ==================================================
-# NOTIFICATIONS
-# ==================================================
-
-def send_notification(title, message):
-
-    notification.notify(
-        title=title,
-        message=message,
-        timeout=10
-    )
-
-# ==================================================
-# GREETING SYSTEM
-# ==================================================
-
-def greet_user(assistant_name, user_name):
-
-    greetings = [
-
-        f"Hello, {user_name}.",
-
-        f"Welcome back, {user_name}.",
-
-        "Systems online.",
-
-        "Good to see you again.",
-
-        "Ready to assist."
-    ]
-
-    message = random.choice(greetings)
-
-    send_notification(
-        assistant_name,
-        message
-    )
-
-    speak(message)
-
-# ==================================================
-# TIME SYSTEM
+# BUILT-IN COMMANDS
 # ==================================================
 
 def tell_time(assistant_name):
 
-    current_time = datetime.datetime.now().strftime(
-        "%I:%M %p"
-    )
+    current_time = get_time()
 
-    message = f"The current time is {current_time}."
+    message = (
+        f"The current time is {current_time}."
+    )
 
     send_notification(
         assistant_name,
@@ -137,13 +143,14 @@ def tell_time(assistant_name):
 
     speak(message)
 
-# ==================================================
-# STATUS SYSTEM
-# ==================================================
+def greet_user(
+    assistant_name,
+    user_name
+):
 
-def system_status(assistant_name):
-
-    message = "Systems operating normally."
+    message = (
+        f"Hello, {user_name}."
+    )
 
     send_notification(
         assistant_name,
@@ -152,13 +159,13 @@ def system_status(assistant_name):
 
     speak(message)
 
-# ==================================================
-# UNKNOWN COMMAND
-# ==================================================
+def system_status(
+    assistant_name
+):
 
-def unknown_command(assistant_name):
-
-    message = "I do not recognize that command."
+    message = (
+        "Systems operating normally."
+    )
 
     send_notification(
         assistant_name,
@@ -167,15 +174,13 @@ def unknown_command(assistant_name):
 
     speak(message)
 
-# ==================================================
-# WEB COMMANDS
-# ==================================================
+def unknown_command(
+    assistant_name
+):
 
-def open_youtube(assistant_name):
-
-    webbrowser.open("https://youtube.com")
-
-    message = "Opening YouTube."
+    message = (
+        "I do not recognize that command."
+    )
 
     send_notification(
         assistant_name,
@@ -183,89 +188,107 @@ def open_youtube(assistant_name):
     )
 
     speak(message)
-
-
-def open_google(assistant_name):
-
-    webbrowser.open("https://google.com")
-
-    message = "Opening Google."
-
-    send_notification(
-        assistant_name,
-        message
-    )
-
-    speak(message)
-
-# ==================================================
-# APPLICATION COMMANDS
-# ==================================================
 
 def open_notepad(assistant_name):
 
-    os.system("notepad")
-
-    message = "Opening Notepad."
+    notepad()
 
     send_notification(
         assistant_name,
-        message
+        "Opening Notepad."
     )
 
-    speak(message)
+    speak("Opening Notepad.")
 
 # ==================================================
-# NOTE SYSTEM
+# MODULE WRAPPERS
+# ==================================================
+
+def open_youtube(
+    assistant_name
+):
+
+    youtube()
+
+    send_notification(
+        assistant_name,
+        "Opening YouTube."
+    )
+
+    speak("Opening YouTube.")
+
+def open_google(
+    assistant_name
+):
+
+    google()
+
+    send_notification(
+        assistant_name,
+        "Opening Google."
+    )
+
+    speak("Opening Google.")
+
+# ==================================================
+# COMMAND REGISTRY
+# ==================================================
+
+COMMANDS = {
+
+    # Greetings
+
+    "hello": greet_user,
+    "hi": greet_user,
+    "hey": greet_user,
+
+    # Time
+
+    "time": tell_time,
+    "clock": tell_time,
+
+    # Status
+
+    "status": system_status,
+    "how are you": system_status,
+
+    # YouTube
+
+    "youtube": open_youtube,
+    "yt": open_youtube,
+    "open youtube": open_youtube,
+
+    # Google
+
+    "google": open_google,
+    "search": open_google,
+    "open google": open_google
+
+}
+
+# ==================================================
+# NOTES
 # ==================================================
 
 def save_note(assistant_name):
 
     note = input("Enter note: ")
 
-    os.makedirs(
-        os.path.dirname(NOTES_FILE),
-        exist_ok=True
-    )
-
-    with open(NOTES_FILE, "a") as file:
-
-        file.write(note + "\n")
-
-    message = "Note saved."
+    note_save(note)
 
     send_notification(
         assistant_name,
-        message
+        "Note saved."
     )
 
-    speak(message)
+    speak("Note saved.")
 
 
 def show_notes(assistant_name):
 
-    try:
+    notes = get_notes()
 
-        with open(NOTES_FILE, "r") as file:
-
-            notes = file.readlines()
-
-        all_notes = "\n".join(
-            note.strip() for note in notes
-        )
-
-        if not all_notes:
-
-            all_notes = "No notes found."
-
-        send_notification(
-            assistant_name,
-            all_notes
-        )
-
-        speak("Displaying notes.")
-
-    except FileNotFoundError:
+    if not notes:
 
         send_notification(
             assistant_name,
@@ -274,35 +297,28 @@ def show_notes(assistant_name):
 
         speak("No notes found.")
 
+        return
 
-def clear_notes(assistant_name):
-
-    with open(NOTES_FILE, "w") as file:
-
-        file.write("")
-
-    message = "All notes cleared."
+    note_text = "\n".join(
+        note.strip()
+        for note in notes
+    )
 
     send_notification(
         assistant_name,
-        message
+        note_text
     )
 
-    speak(message)
+    speak("Displaying notes.")
 
-# ==================================================
-# REMINDER SYSTEM
-# ==================================================
 
-def hourly_reminder_loop(assistant_name):
+def clear_notes(assistant_name):
 
-    while True:
+    note_clear()
 
-        time.sleep(3600)
+    send_notification(
+        assistant_name,
+        "All notes cleared."
+    )
 
-        send_notification(
-            assistant_name,
-            "Hourly reminder."
-        )
-
-        speak("Hourly reminder.")
+    speak("All notes cleared.")
